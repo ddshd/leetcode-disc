@@ -1,6 +1,12 @@
-const { Client, MessageEmbed } = require('discord.js');
+const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
 const axios = require('axios');
-const client = new Client();
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
+});
 
 const prefix = '!problem';
 const problemUrlBase = 'https://leetcode.com/problems/';
@@ -41,7 +47,7 @@ axios
 		totalProblems = resp.data.num_total;
 		resp.data.stat_status_pairs.forEach((problem) => {
 			const newProblem = new Problem(problem);
-			// ToDo need to fix .filter but this works in the mean time
+ 			// ToDo need to fix .filter but this works in the mean time
 			if (newProblem.paidOnly === false) {
 				freeProblems.push(newProblem);
 			}
@@ -80,7 +86,7 @@ function problemType(data, msg, diff = '') {
 	const aProblem = data[randProblem];
 	const problemUrl = problemUrlBase + aProblem.titleSlug + '/';
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setTitle(aProblem.title)
 		.setColor('#f89f1b')
 		// online image from leetcode website for thumbnail (pls don't go down)
@@ -90,15 +96,18 @@ function problemType(data, msg, diff = '') {
 			aProblem.paidOnly ? 'locked/paid' : 'unlocked/free'
 		} problem.`)
 		.setURL(problemUrl);
-	msg.channel.send(embed);
+	msg.reply({ embeds: [embed] });
 }
 
-client.on('message', (msg) => {
+client.on('messageCreate', (msg) => {
+
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
 
 	const args = msg.content.slice(prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 	let diff;
+
 
 	if (typeof args[0] != 'undefined') {
 		const temp = args[0].toLowerCase();
@@ -108,7 +117,7 @@ client.on('message', (msg) => {
 	}
 
 	if (command === 'info') {
-		msg.channel.send(
+		msg.reply(
 			`Leetcode currently has a total of ${totalProblems} problems of which ${freeProblems.length} are free, and ${paidProblems.length} are paid.`,
 		);
 	}
@@ -119,7 +128,7 @@ client.on('message', (msg) => {
 		problemType(paidProblems, msg, diff);
 	}
 	else if (command === 'help') {
-		msg.channel.send(
+		msg.reply(
 			'```Usage:\n\n\t!problem (without args) - gives you a random problem of any difficulty either paid/free.' +
 			'\n\n\t!problem free - gives you a random freely accessible problem of any difficulty.' +
 			'\n\n\t!problem paid - gives you a random paid/locked problem of any difficulty.' +
@@ -132,3 +141,4 @@ client.on('message', (msg) => {
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
+ 
