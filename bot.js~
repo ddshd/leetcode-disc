@@ -65,7 +65,6 @@ axios
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
-        console.log(`Invite the bot using https://discord.com/api/oauth2/authorize?permissions=137439292480&scope=bot&client_id=${process.env.DISCORD_APP_ID}`);
 });
 
 /**
@@ -105,7 +104,7 @@ client.on('messageCreate', (msg) => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
 
-	const args = msg.content.slice(prefix.length).trim().split(' ');
+	const args = msg.content.slice(prefix).trim().split(' ');
 	const command = args.shift().toLowerCase();
 	let diff;
 
