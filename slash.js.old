@@ -1,0 +1,80 @@
+function createCommand(client) {
+
+ const guildId = '425006557030252544' // Use your own guild ID
+  const guild = client.guilds.cache.get(guildId)
+  let commands;
+
+  if (guild) {
+    commands = guild.commands
+  } else {
+    commands = client.application?.commands
+  }
+  
+  commands?.create({
+    "name": "problem",
+    "description": "Get a leetcode problem",
+    "options": [
+        {
+            "name": "any",
+            "description": "Randomly get any problem",
+            "type": 1
+        },
+        {
+            "name": "free",
+            "description": "Get a free leetcode problem",
+            "type": 2, // 2 is type SUB_COMMAND_GROUP
+            "options": [
+                {
+                    "name": "any",
+                    "description": "Randomly get a free problem.",
+                    "type": 1 // 1 is type SUB_COMMAND
+                },
+                {
+                    "name": "easy",
+                    "description": "Randomly get a free easy problem.",
+                    "type": 1 // 1 is type SUB_COMMAND
+                },
+                {
+                    "name": "medium",
+                    "description": "Randomly get a free medium problem.",
+                    "type": 1
+                },
+                {
+                  "name": "hard",
+                  "description": "Randomly get a free hard problem.",
+                  "type": 1
+                }
+            ]
+        },
+        {
+            "name": "paid",
+            "type": 2,
+            "description": "Get a paid leetcode problem",
+            "options": [
+              {
+                "name": "any",
+                "description": "Randomly get a paid problem.",
+                "type": 1 // 1 is type SUB_COMMAND
+              },
+              {
+                "name": "easy",
+                "description": "Randomly get a paid easy problem.",
+                "type": 1 // 1 is type SUB_COMMAND
+            },
+            {
+                "name": "medium",
+                "description": "Randomly get a paid medium problem.",
+                "type": 1
+            },
+            {
+              "name": "hard",
+              "description": "Randomly get a paid hard problem.",
+              "type": 1
+            }
+            ]
+        }
+    ]
+  });
+}
+
+module.exports = {createCommand};
